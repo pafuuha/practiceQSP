@@ -37,6 +37,21 @@ namespace Tests
             Assert.AreEqual(0b0111, morton);
         }
 
+        [Test]
+        public void MortonOrderSpriteRenderer_1_1()
+        {
+            float lengthX = 250;
+            float lengthY = 125;
+            GameObject obj = new GameObject();
+            obj.AddComponent<SpriteRenderer>();
+            SpriteRenderer target = obj.GetComponent<SpriteRenderer>();
+            target.transform.position = new Vector3(lengthX * 3, lengthY * 1,0);
+            target.size = new Vector2(100, 100);
+
+            uint morton = ConverMortonOrder.GetSpriteRendererMortonOrder(target, lengthX, lengthY);
+            Assert.AreEqual(0b000001, morton);
+        }
+
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]

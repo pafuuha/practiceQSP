@@ -12,22 +12,22 @@ public static class ConverMortonOrder
     /// <param name="lengthX">１単位のXの長さ</param>
     /// <param name="lengthY">１単位のYの長さ</param>
     /// <returns></returns>
-    public static uint GetMortonOrder(float x, float y, int lengthX, int lengthY)
+    public static uint GetMortonOrder(float x, float y, float lengthX, float lengthY)
     {
-        int numX = (int)x / lengthX;
-        int numY = (int)y / lengthY;
+        int numX = (int)(x / lengthX);
+        int numY = (int)(y / lengthY);
         
 
         return bitSeparate((uint)numX) | bitSeparate((uint)numY) << 1;
     }
     /// <summary>
-    /// 
+    /// SpriteRendererのモートン順列を返す
     /// </summary>
     /// <param name="target"></param>
     /// <param name="lengthX"></param>
     /// <param name="lengthY"></param>
     /// <returns></returns>
-    public static uint GetSpriteRendererMortonOrder(SpriteRenderer target, int lengthX, int lengthY)
+    public static uint GetSpriteRendererMortonOrder(SpriteRenderer target, float lengthX, float lengthY)
     {
 
         float targetX = target.transform.position.x;
@@ -37,11 +37,36 @@ public static class ConverMortonOrder
         float targetH = target.size.y;
 
         uint mortonOrderLeftUp = GetMortonOrder(targetX - targetW / 2, targetY - targetH / 2, lengthX, lengthY);
-        uint mortonOrderRightDown = GetMortonOrder(targetX + targetW / 2, targetY - targetH / 2, lengthX, lengthY);
+        uint mortonOrderRightDown = GetMortonOrder(targetX + targetW / 2, targetY + targetH / 2, lengthX, lengthY);
 
-        return mortonOrderLeftUp & mortonOrderRightDown;
+        // 排他的論理和
+        uint cal = mortonOrderLeftUp ^ mortonOrderRightDown;
+
+        int msb_num = 0 ;
+        int num = 0;
+        while (num < 6 )
+        {
+            if ((cal & ((uint)1 << num)) == ((uint)1 << num))
+            {
+                msb_num = num;
+            }
+            num++;
+        }
+
+        int shift_bit = (((int)msb_num / 2) + 1) * 2;
+
+        return mortonOrderRightDown >> shift_bit;
     }
 
+    private static uint bits_msb(uint v)
+    {
+        v = v | (v >> 1);
+        v = v | (v >> 2);
+        v = v | (v >> 4);
+        v = v | (v >> 8);
+        v = v | (v >> 16);
+        return v ^ (v >> 1);
+    }
     private static uint bitSeparate(uint inp)
     {
         inp = (inp | (inp << 8)) & 0x00ff00ff;
