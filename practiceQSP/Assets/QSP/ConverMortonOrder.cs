@@ -29,7 +29,6 @@ public static class ConverMortonOrder
     /// <returns></returns>
     public static uint GetSpriteRendererMortonOrder(SpriteRenderer target, float lengthX, float lengthY)
     {
-
         float targetX = target.transform.position.x;
         float targetY = target.transform.position.y;
 
@@ -54,8 +53,13 @@ public static class ConverMortonOrder
         }
 
         int shift_bit = (((int)msb_num / 2) + 1) * 2;
+        int mortonLevel = 4 - shift_bit / 2;
 
-        return mortonOrderRightDown >> shift_bit;
+        int[] mortonLiner = { 0, 5,  21, 85};
+
+
+
+        return (mortonOrderRightDown >> shift_bit) + (uint)mortonLiner[mortonLevel - 1];
     }
 
     private static uint bits_msb(uint v)

@@ -49,7 +49,7 @@ namespace Tests
             target.size = new Vector2(100, 100);
 
             uint morton = ConverMortonOrder.GetSpriteRendererMortonOrder(target, lengthX, lengthY);
-            Assert.AreEqual(0b000001, morton);
+            Assert.AreEqual(22, morton);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
