@@ -41,25 +41,35 @@ public static class ConverMortonOrder
         // 排他的論理和
         uint cal = mortonOrderLeftUp ^ mortonOrderRightDown;
 
-        int msb_num = 0 ;
+        // 最上位ビットの位を取得
+        int msb_num = getMSBNumber(mortonOrderLeftUp ^ mortonOrderRightDown);
+
+        // いくつ動かせばいいかを計算
+        int shift_bit = (((int)msb_num / 2) + 1) * 2;
+
+        // レベルを計算
+        int mortonLevel = 4 - shift_bit / 2;
+
+        // いくつ足せばいいかの定数
+        int[] mortonLiner = { 0, 5,  21, 85};
+        
+        return (mortonOrderRightDown >> shift_bit) + (uint)mortonLiner[mortonLevel - 1];
+    }
+
+    private static int getMSBNumber(uint mortonXor)
+    {
+        int msb_num = 0;
         int num = 0;
-        while (num < 6 )
+        while (num < 6)
         {
-            if ((cal & ((uint)1 << num)) == ((uint)1 << num))
+            if ((mortonXor & ((uint)1 << num)) == ((uint)1 << num))
             {
                 msb_num = num;
             }
             num++;
         }
+        return msb_num / 2;
 
-        int shift_bit = (((int)msb_num / 2) + 1) * 2;
-        int mortonLevel = 4 - shift_bit / 2;
-
-        int[] mortonLiner = { 0, 5,  21, 85};
-
-
-
-        return (mortonOrderRightDown >> shift_bit) + (uint)mortonLiner[mortonLevel - 1];
     }
 
     private static uint bits_msb(uint v)
