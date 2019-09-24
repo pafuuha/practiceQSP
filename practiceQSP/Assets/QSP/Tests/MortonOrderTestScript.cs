@@ -52,6 +52,14 @@ namespace Tests
             Assert.AreEqual(22, morton);
         }
 
+
+        [Test]
+        public void Test()
+        {
+            test  t = new test();
+            t.Init();
+        }
+
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
