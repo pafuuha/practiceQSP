@@ -14,18 +14,21 @@ public class create : MonoBehaviour
             lists.Add(ts.gameObject);
         }
 
-
-        foreach (var obj in lists)
-        {
-            myCollision.Register(obj.GetComponent<SpriteRenderer>());
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        myCollision.Collision(0);
+        myCollision.Clear();
+        foreach (var obj in lists)
+        {
+            myCollision.Register(obj.GetComponent<SpriteRenderer>());
+        }
+        myCollision.Collision(0,(left, right) => {
+            Debug.Log("Hitしました");
+            return 1;
+        });
 
     }
 }

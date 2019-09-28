@@ -39,6 +39,8 @@ public class MortonCollision
         
     }
 
+    public delegate void HitContent(SpriteRenderer reft, SpriteRenderer light);
+
     public void Register(SpriteRenderer target)
     {
 
@@ -51,13 +53,30 @@ public class MortonCollision
         cells[targetMorton].Objects.Add(target);
     }
 
-    public void Collision(int elem)
+    /// <summary>
+    /// クリア
+    /// </summary>
+    public void Clear()
+    {
+        foreach (var cell in cells)
+        {
+            if (cell != null)
+                cell.Objects.Clear();
+        }
+    }
+
+    /// <summary>
+    /// 登録したオブジェクトで、あたり判定を行う
+    /// </summary>
+    /// <param name="elem">通常は0を指定。</param>
+    /// <param name="HitResponse">判定後の動作を記述する</param>
+    public void Collision(int elem, System.Func<GameObject, GameObject,int> HitResponse)
     {
         if (elem >= maxElm )
             return;
 
 
-        Debug.Log(elem);
+//        Debug.Log(elem);
 
         // 同じ層同士の衝突
         if (cells[elem] != null)
@@ -67,15 +86,13 @@ public class MortonCollision
             {
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    // ここに衝突判定
                     Debug.Log(elem + " ; " + cells[elem].Objects.Count + " : " + i +  ":" + j);
-                    Logic();
+                    HitResponse(cells[elem].Objects[i].gameObject, cells[elem].Objects[j].gameObject);
                 }
 
                 foreach (var stackObj in stackCollisionList)
                 {
-                    //ここに衝突
-//                    Logic();
+                    HitResponse(cells[elem].Objects[i].gameObject, stackObj.gameObject);
                 }
             }
         }
@@ -99,7 +116,7 @@ public class MortonCollision
                 }
                 bAddObjeToStack = true;
             }
-            Collision(nextElem);
+            Collision(nextElem, HitResponse);
         }
 
         // スタックを削除
